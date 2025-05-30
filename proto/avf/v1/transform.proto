@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package avf.v1;
+
+message TransformRequest {}
+
+message TransformResponse {}
+
+service TransformService {
+  rpc TransformStream(stream TransformRequest) returns (stream TransformResponse) {}
+}

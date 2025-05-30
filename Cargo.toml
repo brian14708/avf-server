@@ -6,6 +6,7 @@ edition = "2024"
 [dependencies]
 clap = { version = "4.5.38", features = ["derive"] }
 prost = "0.13.5"
+rsmpeg = { version = "0.15.2", features = ["link_system_ffmpeg"] }
 tokio = { version = "1.45.0", features = ["full"] }
 tokio-stream = "0.1.17"
 tonic = { version = "0.13.1", features = ["gzip"] }

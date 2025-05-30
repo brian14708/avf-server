@@ -59,13 +59,20 @@
           devShells.default =
             (craneLib.devShell.override {
               mkShell = pkgs.mkShell.override {
-                stdenv = pkgs.stdenvAdapters.useMoldLinker pkgs.stdenv;
+                stdenv =
+                  if pkgs.stdenv.hostPlatform.isDarwin then
+                    pkgs.clangStdenv
+                  else
+                    pkgs.stdenvAdapters.useMoldLinker pkgs.clangStdenv;
               };
             })
               {
                 packages = with pkgs; [
                   protobuf
+                  pkg-config
+                  ffmpeg-headless
                 ];
+                LIBCLANG_PATH = "${pkgs.llvmPackages.libclang.lib}/lib";
               };
 
           treefmt = {
@@ -103,7 +110,13 @@
                 commonArgs = {
                   inherit pname src;
                   strictDeps = true;
-                  nativeBuildInputs = with pkgs; [ protobuf ];
+                  nativeBuildInputs = with pkgs; [
+                    protobuf
+                    pkg-config
+                  ];
+                  stdenv = p: p.clangStdenv;
+                  buildInputs = with pkgs; [ ffmpeg-headless ];
+                  LIBCLANG_PATH = "${pkgs.llvmPackages.libclang.lib}/lib";
                 };
               in
               craneLib.buildPackage (

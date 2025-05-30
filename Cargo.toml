@@ -15,3 +15,8 @@ tracing-subscriber = "0.3.19"
 
 [build-dependencies]
 tonic-build = "0.13.1"
+
+[dev-dependencies]
+bytes = "1.10.1"
+http-body = "1.0.1"
+lazy_static = "1.5.0"

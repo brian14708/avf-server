@@ -1,0 +1,38 @@
+name: Build image
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "30 4 * * 2"
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  oci:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: DeterminateSystems/determinate-nix-action@v3
+      - uses: cachix/cachix-action@v16
+        with:
+          name: brian14708
+          authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
+      - name: Build OCI image
+        run: nix build .#oci
+      - name: Extract image path
+        id: image-path
+        run: echo "path=$(readlink -f ./result)" >> "$GITHUB_OUTPUT"
+      - name: Install skopeo
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y skopeo
+      - name: Log in to GHCR
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | skopeo login ghcr.io -u ${{ github.actor }} --password-stdin
+      - name: Push image to GHCR
+        run: |
+          skopeo copy \
+            docker-archive:${{ steps.image-path.outputs.path }} \
+            docker://ghcr.io/${{ github.repository_owner }}/avf-server:latest

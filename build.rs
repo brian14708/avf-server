@@ -6,6 +6,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     tonic_build::configure()
         .build_client(false)
         .file_descriptor_set_path(out_dir.join("avf_descriptor.bin"))
-        .compile_protos(&["proto/avf/v1/transform.proto"], &["proto"])?;
+        .compile_protos(
+            &["proto/avf/v1/transform.proto", "proto/avf/v1/spec.proto"],
+            &["proto"],
+        )?;
     Ok(())
 }

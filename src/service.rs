@@ -10,11 +10,11 @@ pub struct TransformService {}
 #[tonic::async_trait]
 impl v1::transform_service_server::TransformService for TransformService {
     type TransformStreamStream =
-        Pin<Box<dyn Stream<Item = Result<v1::TransformResponse, Status>> + Send>>;
+        Pin<Box<dyn Stream<Item = Result<v1::TransformStreamResponse, Status>> + Send>>;
 
     async fn transform_stream(
         &self,
-        _req: Request<Streaming<v1::TransformRequest>>,
+        _req: Request<Streaming<v1::TransformStreamRequest>>,
     ) -> tonic::Result<tonic::Response<Self::TransformStreamStream>> {
         let (_tx, rx) = mpsc::channel(128);
         Ok(Response::new(Box::pin(ReceiverStream::new(rx))))

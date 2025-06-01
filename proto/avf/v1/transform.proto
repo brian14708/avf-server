@@ -2,10 +2,41 @@ syntax = "proto3";
 
 package avf.v1;
 
-message TransformRequest {}
+import "avf/v1/spec.proto";
+import "google/protobuf/empty.proto";
 
-message TransformResponse {}
+message TransformInitialize {
+  TransformSpec spec = 1;
+}
+
+message StreamData {
+  string name = 1;
+  bytes payload = 2;
+}
+
+message StreamControl {
+  string name = 1;
+  oneof control_type {
+    google.protobuf.Empty reset_stream = 4;
+    google.protobuf.Empty end_of_stream = 3;
+  }
+}
+
+message TransformStreamRequest {
+  oneof request_type {
+    TransformInitialize initialize = 1;
+    StreamData data = 2;
+    StreamControl control = 3;
+  }
+}
+
+message TransformStreamResponse {
+  oneof response_type {
+    StreamData data = 1;
+    StreamControl control = 2;
+  }
+}
 
 service TransformService {
-  rpc TransformStream(stream TransformRequest) returns (stream TransformResponse) {}
+  rpc TransformStream(stream TransformStreamRequest) returns (stream TransformStreamResponse) {}
 }

@@ -1,0 +1,101 @@
+syntax = "proto3";
+
+package avf.v1;
+
+enum TrackType {
+  TRACK_TYPE_UNSPECIFIED = 0;
+  TRACK_TYPE_AUDIO = 1;
+  TRACK_TYPE_VIDEO = 2;
+}
+
+enum CodecType {
+  CODEC_TYPE_UNSPECIFIED = 0;
+  CODEC_TYPE_CUSTOM = 16;
+  CODEC_TYPE_NONE = 1;
+}
+
+enum FormatType {
+  FORMAT_TYPE_UNSPECIFIED = 0;
+  FORMAT_TYPE_CUSTOM = 16;
+  FORMAT_TYPE_RAW = 1;
+}
+
+message TransformSpec {
+  repeated InputSpec inputs = 1;
+  repeated OutputSpec outputs = 2;
+  PipelineSpec pipeline = 3;
+}
+
+message PipelineSpec {
+  repeated NodeSpec nodes = 1;
+  repeated PortLinkSpec links = 2;
+}
+
+message PortLinkSpec {
+  string source = 1;
+  int32 source_port = 2;
+  string sink = 3;
+  int32 sink_port = 4;
+}
+
+message NodeSpec {
+  string name = 1;
+  oneof node_type {
+    AVFilterGraphSpec avfilter_graph = 2;
+  }
+}
+
+message AVFilterGraphSpec {
+  string description = 1;
+  repeated string sources = 2;
+  repeated string sinks = 3;
+}
+
+message CodecSpec {
+  CodecType type = 1;
+  string custom_type = 16;
+  map<string, string> options = 2;
+}
+
+message BitstreamFilterSpec {
+  string name = 1;
+  map<string, string> options = 2;
+}
+
+message TrackSpec {
+  TrackType type = 1;
+  CodecSpec codec = 2;
+  map<string, string> metadata = 3;
+  repeated BitstreamFilterSpec bitstream_filters = 4;
+}
+
+message FormatSpec {
+  FormatType type = 1;
+  string custom_type = 16;
+  map<string, string> options = 2;
+  map<string, string> metadata = 3;
+  repeated TrackSpec tracks = 4;
+}
+
+message StreamSourceSpec {}
+
+message StreamSinkSpec {}
+
+message InputSpec {
+  string name = 1;
+  FormatSpec format = 2;
+  oneof input_type {
+    StreamSourceSpec stream = 3;
+  }
+  // apply before the main pipeline
+  // will flush when stream resets
+  PipelineSpec pipeline = 4;
+}
+
+message OutputSpec {
+  string name = 1;
+  FormatSpec format = 2;
+  oneof output_type {
+    StreamSinkSpec stream = 3;
+  }
+}

@@ -27,7 +27,7 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type TransformServiceClient interface {
-	TransformStream(ctx context.Context, opts ...grpc.CallOption) (grpc.BidiStreamingClient[TransformRequest, TransformResponse], error)
+	TransformStream(ctx context.Context, opts ...grpc.CallOption) (grpc.BidiStreamingClient[TransformStreamRequest, TransformStreamResponse], error)
 }
 
 type transformServiceClient struct {
@@ -38,24 +38,24 @@ func NewTransformServiceClient(cc grpc.ClientConnInterface) TransformServiceClie
 	return &transformServiceClient{cc}
 }
 
-func (c *transformServiceClient) TransformStream(ctx context.Context, opts ...grpc.CallOption) (grpc.BidiStreamingClient[TransformRequest, TransformResponse], error) {
+func (c *transformServiceClient) TransformStream(ctx context.Context, opts ...grpc.CallOption) (grpc.BidiStreamingClient[TransformStreamRequest, TransformStreamResponse], error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	stream, err := c.cc.NewStream(ctx, &TransformService_ServiceDesc.Streams[0], TransformService_TransformStream_FullMethodName, cOpts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &grpc.GenericClientStream[TransformRequest, TransformResponse]{ClientStream: stream}
+	x := &grpc.GenericClientStream[TransformStreamRequest, TransformStreamResponse]{ClientStream: stream}
 	return x, nil
 }
 
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
-type TransformService_TransformStreamClient = grpc.BidiStreamingClient[TransformRequest, TransformResponse]
+type TransformService_TransformStreamClient = grpc.BidiStreamingClient[TransformStreamRequest, TransformStreamResponse]
 
 // TransformServiceServer is the server API for TransformService service.
 // All implementations must embed UnimplementedTransformServiceServer
 // for forward compatibility.
 type TransformServiceServer interface {
-	TransformStream(grpc.BidiStreamingServer[TransformRequest, TransformResponse]) error
+	TransformStream(grpc.BidiStreamingServer[TransformStreamRequest, TransformStreamResponse]) error
 	mustEmbedUnimplementedTransformServiceServer()
 }
 
@@ -66,7 +66,7 @@ type TransformServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedTransformServiceServer struct{}
 
-func (UnimplementedTransformServiceServer) TransformStream(grpc.BidiStreamingServer[TransformRequest, TransformResponse]) error {
+func (UnimplementedTransformServiceServer) TransformStream(grpc.BidiStreamingServer[TransformStreamRequest, TransformStreamResponse]) error {
 	return status.Errorf(codes.Unimplemented, "method TransformStream not implemented")
 }
 func (UnimplementedTransformServiceServer) mustEmbedUnimplementedTransformServiceServer() {}
@@ -91,11 +91,11 @@ func RegisterTransformServiceServer(s grpc.ServiceRegistrar, srv TransformServic
 }
 
 func _TransformService_TransformStream_Handler(srv interface{}, stream grpc.ServerStream) error {
-	return srv.(TransformServiceServer).TransformStream(&grpc.GenericServerStream[TransformRequest, TransformResponse]{ServerStream: stream})
+	return srv.(TransformServiceServer).TransformStream(&grpc.GenericServerStream[TransformStreamRequest, TransformStreamResponse]{ServerStream: stream})
 }
 
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
-type TransformService_TransformStreamServer = grpc.BidiStreamingServer[TransformRequest, TransformResponse]
+type TransformService_TransformStreamServer = grpc.BidiStreamingServer[TransformStreamRequest, TransformStreamResponse]
 
 // TransformService_ServiceDesc is the grpc.ServiceDesc for TransformService service.
 // It's only intended for direct use with grpc.RegisterService,

@@ -13,6 +13,7 @@ import (
 
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 const (
@@ -22,26 +23,27 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type TransformRequest struct {
+type TransformInitialize struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
+	Spec          *TransformSpec         `protobuf:"bytes,1,opt,name=spec,proto3" json:"spec,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *TransformRequest) Reset() {
-	*x = TransformRequest{}
+func (x *TransformInitialize) Reset() {
+	*x = TransformInitialize{}
 	mi := &file_avf_v1_transform_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *TransformRequest) String() string {
+func (x *TransformInitialize) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*TransformRequest) ProtoMessage() {}
+func (*TransformInitialize) ProtoMessage() {}
 
-func (x *TransformRequest) ProtoReflect() protoreflect.Message {
+func (x *TransformInitialize) ProtoReflect() protoreflect.Message {
 	mi := &file_avf_v1_transform_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -53,31 +55,40 @@ func (x *TransformRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use TransformRequest.ProtoReflect.Descriptor instead.
-func (*TransformRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use TransformInitialize.ProtoReflect.Descriptor instead.
+func (*TransformInitialize) Descriptor() ([]byte, []int) {
 	return file_avf_v1_transform_proto_rawDescGZIP(), []int{0}
 }
 
-type TransformResponse struct {
+func (x *TransformInitialize) GetSpec() *TransformSpec {
+	if x != nil {
+		return x.Spec
+	}
+	return nil
+}
+
+type StreamData struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
+	Name          string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Payload       []byte                 `protobuf:"bytes,2,opt,name=payload,proto3" json:"payload,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *TransformResponse) Reset() {
-	*x = TransformResponse{}
+func (x *StreamData) Reset() {
+	*x = StreamData{}
 	mi := &file_avf_v1_transform_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *TransformResponse) String() string {
+func (x *StreamData) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*TransformResponse) ProtoMessage() {}
+func (*StreamData) ProtoMessage() {}
 
-func (x *TransformResponse) ProtoReflect() protoreflect.Message {
+func (x *StreamData) ProtoReflect() protoreflect.Message {
 	mi := &file_avf_v1_transform_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -89,20 +100,324 @@ func (x *TransformResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use TransformResponse.ProtoReflect.Descriptor instead.
-func (*TransformResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use StreamData.ProtoReflect.Descriptor instead.
+func (*StreamData) Descriptor() ([]byte, []int) {
 	return file_avf_v1_transform_proto_rawDescGZIP(), []int{1}
 }
+
+func (x *StreamData) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *StreamData) GetPayload() []byte {
+	if x != nil {
+		return x.Payload
+	}
+	return nil
+}
+
+type StreamControl struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	Name  string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	// Types that are valid to be assigned to ControlType:
+	//
+	//	*StreamControl_ResetStream
+	//	*StreamControl_EndOfStream
+	ControlType   isStreamControl_ControlType `protobuf_oneof:"control_type"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *StreamControl) Reset() {
+	*x = StreamControl{}
+	mi := &file_avf_v1_transform_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *StreamControl) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*StreamControl) ProtoMessage() {}
+
+func (x *StreamControl) ProtoReflect() protoreflect.Message {
+	mi := &file_avf_v1_transform_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use StreamControl.ProtoReflect.Descriptor instead.
+func (*StreamControl) Descriptor() ([]byte, []int) {
+	return file_avf_v1_transform_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *StreamControl) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *StreamControl) GetControlType() isStreamControl_ControlType {
+	if x != nil {
+		return x.ControlType
+	}
+	return nil
+}
+
+func (x *StreamControl) GetResetStream() *emptypb.Empty {
+	if x != nil {
+		if x, ok := x.ControlType.(*StreamControl_ResetStream); ok {
+			return x.ResetStream
+		}
+	}
+	return nil
+}
+
+func (x *StreamControl) GetEndOfStream() *emptypb.Empty {
+	if x != nil {
+		if x, ok := x.ControlType.(*StreamControl_EndOfStream); ok {
+			return x.EndOfStream
+		}
+	}
+	return nil
+}
+
+type isStreamControl_ControlType interface {
+	isStreamControl_ControlType()
+}
+
+type StreamControl_ResetStream struct {
+	ResetStream *emptypb.Empty `protobuf:"bytes,4,opt,name=reset_stream,json=resetStream,proto3,oneof"`
+}
+
+type StreamControl_EndOfStream struct {
+	EndOfStream *emptypb.Empty `protobuf:"bytes,3,opt,name=end_of_stream,json=endOfStream,proto3,oneof"`
+}
+
+func (*StreamControl_ResetStream) isStreamControl_ControlType() {}
+
+func (*StreamControl_EndOfStream) isStreamControl_ControlType() {}
+
+type TransformStreamRequest struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Types that are valid to be assigned to RequestType:
+	//
+	//	*TransformStreamRequest_Initialize
+	//	*TransformStreamRequest_Data
+	//	*TransformStreamRequest_Control
+	RequestType   isTransformStreamRequest_RequestType `protobuf_oneof:"request_type"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *TransformStreamRequest) Reset() {
+	*x = TransformStreamRequest{}
+	mi := &file_avf_v1_transform_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *TransformStreamRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TransformStreamRequest) ProtoMessage() {}
+
+func (x *TransformStreamRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_avf_v1_transform_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use TransformStreamRequest.ProtoReflect.Descriptor instead.
+func (*TransformStreamRequest) Descriptor() ([]byte, []int) {
+	return file_avf_v1_transform_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *TransformStreamRequest) GetRequestType() isTransformStreamRequest_RequestType {
+	if x != nil {
+		return x.RequestType
+	}
+	return nil
+}
+
+func (x *TransformStreamRequest) GetInitialize() *TransformInitialize {
+	if x != nil {
+		if x, ok := x.RequestType.(*TransformStreamRequest_Initialize); ok {
+			return x.Initialize
+		}
+	}
+	return nil
+}
+
+func (x *TransformStreamRequest) GetData() *StreamData {
+	if x != nil {
+		if x, ok := x.RequestType.(*TransformStreamRequest_Data); ok {
+			return x.Data
+		}
+	}
+	return nil
+}
+
+func (x *TransformStreamRequest) GetControl() *StreamControl {
+	if x != nil {
+		if x, ok := x.RequestType.(*TransformStreamRequest_Control); ok {
+			return x.Control
+		}
+	}
+	return nil
+}
+
+type isTransformStreamRequest_RequestType interface {
+	isTransformStreamRequest_RequestType()
+}
+
+type TransformStreamRequest_Initialize struct {
+	Initialize *TransformInitialize `protobuf:"bytes,1,opt,name=initialize,proto3,oneof"`
+}
+
+type TransformStreamRequest_Data struct {
+	Data *StreamData `protobuf:"bytes,2,opt,name=data,proto3,oneof"`
+}
+
+type TransformStreamRequest_Control struct {
+	Control *StreamControl `protobuf:"bytes,3,opt,name=control,proto3,oneof"`
+}
+
+func (*TransformStreamRequest_Initialize) isTransformStreamRequest_RequestType() {}
+
+func (*TransformStreamRequest_Data) isTransformStreamRequest_RequestType() {}
+
+func (*TransformStreamRequest_Control) isTransformStreamRequest_RequestType() {}
+
+type TransformStreamResponse struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Types that are valid to be assigned to ResponseType:
+	//
+	//	*TransformStreamResponse_Data
+	//	*TransformStreamResponse_Control
+	ResponseType  isTransformStreamResponse_ResponseType `protobuf_oneof:"response_type"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *TransformStreamResponse) Reset() {
+	*x = TransformStreamResponse{}
+	mi := &file_avf_v1_transform_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *TransformStreamResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TransformStreamResponse) ProtoMessage() {}
+
+func (x *TransformStreamResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_avf_v1_transform_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use TransformStreamResponse.ProtoReflect.Descriptor instead.
+func (*TransformStreamResponse) Descriptor() ([]byte, []int) {
+	return file_avf_v1_transform_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *TransformStreamResponse) GetResponseType() isTransformStreamResponse_ResponseType {
+	if x != nil {
+		return x.ResponseType
+	}
+	return nil
+}
+
+func (x *TransformStreamResponse) GetData() *StreamData {
+	if x != nil {
+		if x, ok := x.ResponseType.(*TransformStreamResponse_Data); ok {
+			return x.Data
+		}
+	}
+	return nil
+}
+
+func (x *TransformStreamResponse) GetControl() *StreamControl {
+	if x != nil {
+		if x, ok := x.ResponseType.(*TransformStreamResponse_Control); ok {
+			return x.Control
+		}
+	}
+	return nil
+}
+
+type isTransformStreamResponse_ResponseType interface {
+	isTransformStreamResponse_ResponseType()
+}
+
+type TransformStreamResponse_Data struct {
+	Data *StreamData `protobuf:"bytes,1,opt,name=data,proto3,oneof"`
+}
+
+type TransformStreamResponse_Control struct {
+	Control *StreamControl `protobuf:"bytes,2,opt,name=control,proto3,oneof"`
+}
+
+func (*TransformStreamResponse_Data) isTransformStreamResponse_ResponseType() {}
+
+func (*TransformStreamResponse_Control) isTransformStreamResponse_ResponseType() {}
 
 var File_avf_v1_transform_proto protoreflect.FileDescriptor
 
 const file_avf_v1_transform_proto_rawDesc = "" +
 	"\n" +
-	"\x16avf/v1/transform.proto\x12\x06avf.v1\"\x12\n" +
-	"\x10TransformRequest\"\x13\n" +
-	"\x11TransformResponse2`\n" +
-	"\x10TransformService\x12L\n" +
-	"\x0fTransformStream\x12\x18.avf.v1.TransformRequest\x1a\x19.avf.v1.TransformResponse\"\x00(\x010\x01B\x8b\x01\n" +
+	"\x16avf/v1/transform.proto\x12\x06avf.v1\x1a\x11avf/v1/spec.proto\x1a\x1bgoogle/protobuf/empty.proto\"@\n" +
+	"\x13TransformInitialize\x12)\n" +
+	"\x04spec\x18\x01 \x01(\v2\x15.avf.v1.TransformSpecR\x04spec\":\n" +
+	"\n" +
+	"StreamData\x12\x12\n" +
+	"\x04name\x18\x01 \x01(\tR\x04name\x12\x18\n" +
+	"\apayload\x18\x02 \x01(\fR\apayload\"\xae\x01\n" +
+	"\rStreamControl\x12\x12\n" +
+	"\x04name\x18\x01 \x01(\tR\x04name\x12;\n" +
+	"\freset_stream\x18\x04 \x01(\v2\x16.google.protobuf.EmptyH\x00R\vresetStream\x12<\n" +
+	"\rend_of_stream\x18\x03 \x01(\v2\x16.google.protobuf.EmptyH\x00R\vendOfStreamB\x0e\n" +
+	"\fcontrol_type\"\xc4\x01\n" +
+	"\x16TransformStreamRequest\x12=\n" +
+	"\n" +
+	"initialize\x18\x01 \x01(\v2\x1b.avf.v1.TransformInitializeH\x00R\n" +
+	"initialize\x12(\n" +
+	"\x04data\x18\x02 \x01(\v2\x12.avf.v1.StreamDataH\x00R\x04data\x121\n" +
+	"\acontrol\x18\x03 \x01(\v2\x15.avf.v1.StreamControlH\x00R\acontrolB\x0e\n" +
+	"\frequest_type\"\x87\x01\n" +
+	"\x17TransformStreamResponse\x12(\n" +
+	"\x04data\x18\x01 \x01(\v2\x12.avf.v1.StreamDataH\x00R\x04data\x121\n" +
+	"\acontrol\x18\x02 \x01(\v2\x15.avf.v1.StreamControlH\x00R\acontrolB\x0f\n" +
+	"\rresponse_type2l\n" +
+	"\x10TransformService\x12X\n" +
+	"\x0fTransformStream\x12\x1e.avf.v1.TransformStreamRequest\x1a\x1f.avf.v1.TransformStreamResponse\"\x00(\x010\x01B\x8b\x01\n" +
 	"\n" +
 	"com.avf.v1B\x0eTransformProtoP\x01Z4github.com/brian14708/gst-server/sdk/go/avf/v1;avfv1\xa2\x02\x03AXX\xaa\x02\x06Avf.V1\xca\x02\x06Avf\\V1\xe2\x02\x12Avf\\V1\\GPBMetadata\xea\x02\aAvf::V1b\x06proto3"
 
@@ -119,21 +434,34 @@ func file_avf_v1_transform_proto_rawDescGZIP() []byte {
 }
 
 var (
-	file_avf_v1_transform_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+	file_avf_v1_transform_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
 	file_avf_v1_transform_proto_goTypes  = []any{
-		(*TransformRequest)(nil),  // 0: avf.v1.TransformRequest
-		(*TransformResponse)(nil), // 1: avf.v1.TransformResponse
+		(*TransformInitialize)(nil),     // 0: avf.v1.TransformInitialize
+		(*StreamData)(nil),              // 1: avf.v1.StreamData
+		(*StreamControl)(nil),           // 2: avf.v1.StreamControl
+		(*TransformStreamRequest)(nil),  // 3: avf.v1.TransformStreamRequest
+		(*TransformStreamResponse)(nil), // 4: avf.v1.TransformStreamResponse
+		(*TransformSpec)(nil),           // 5: avf.v1.TransformSpec
+		(*emptypb.Empty)(nil),           // 6: google.protobuf.Empty
 	}
 )
 
 var file_avf_v1_transform_proto_depIdxs = []int32{
-	0, // 0: avf.v1.TransformService.TransformStream:input_type -> avf.v1.TransformRequest
-	1, // 1: avf.v1.TransformService.TransformStream:output_type -> avf.v1.TransformResponse
-	1, // [1:2] is the sub-list for method output_type
-	0, // [0:1] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	5, // 0: avf.v1.TransformInitialize.spec:type_name -> avf.v1.TransformSpec
+	6, // 1: avf.v1.StreamControl.reset_stream:type_name -> google.protobuf.Empty
+	6, // 2: avf.v1.StreamControl.end_of_stream:type_name -> google.protobuf.Empty
+	0, // 3: avf.v1.TransformStreamRequest.initialize:type_name -> avf.v1.TransformInitialize
+	1, // 4: avf.v1.TransformStreamRequest.data:type_name -> avf.v1.StreamData
+	2, // 5: avf.v1.TransformStreamRequest.control:type_name -> avf.v1.StreamControl
+	1, // 6: avf.v1.TransformStreamResponse.data:type_name -> avf.v1.StreamData
+	2, // 7: avf.v1.TransformStreamResponse.control:type_name -> avf.v1.StreamControl
+	3, // 8: avf.v1.TransformService.TransformStream:input_type -> avf.v1.TransformStreamRequest
+	4, // 9: avf.v1.TransformService.TransformStream:output_type -> avf.v1.TransformStreamResponse
+	9, // [9:10] is the sub-list for method output_type
+	8, // [8:9] is the sub-list for method input_type
+	8, // [8:8] is the sub-list for extension type_name
+	8, // [8:8] is the sub-list for extension extendee
+	0, // [0:8] is the sub-list for field type_name
 }
 
 func init() { file_avf_v1_transform_proto_init() }
@@ -141,13 +469,27 @@ func file_avf_v1_transform_proto_init() {
 	if File_avf_v1_transform_proto != nil {
 		return
 	}
+	file_avf_v1_spec_proto_init()
+	file_avf_v1_transform_proto_msgTypes[2].OneofWrappers = []any{
+		(*StreamControl_ResetStream)(nil),
+		(*StreamControl_EndOfStream)(nil),
+	}
+	file_avf_v1_transform_proto_msgTypes[3].OneofWrappers = []any{
+		(*TransformStreamRequest_Initialize)(nil),
+		(*TransformStreamRequest_Data)(nil),
+		(*TransformStreamRequest_Control)(nil),
+	}
+	file_avf_v1_transform_proto_msgTypes[4].OneofWrappers = []any{
+		(*TransformStreamResponse_Data)(nil),
+		(*TransformStreamResponse_Control)(nil),
+	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_avf_v1_transform_proto_rawDesc), len(file_avf_v1_transform_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   2,
+			NumMessages:   5,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

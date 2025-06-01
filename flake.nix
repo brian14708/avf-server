@@ -49,6 +49,7 @@
           );
           craneLib = (crane.mkLib pkgs).overrideToolchain rustToolchain;
           pname = "avf-server";
+          version = self'.packages.default.version;
         in
         {
           _module.args.pkgs = import inputs.nixpkgs {
@@ -71,6 +72,7 @@
                   protobuf
                   pkg-config
                   ffmpeg-headless
+                  go
                 ];
                 LIBCLANG_PATH = "${pkgs.llvmPackages.libclang.lib}/lib";
               };
@@ -79,6 +81,7 @@
             projectRootFile = "flake.nix";
             programs = {
               nixfmt.enable = true;
+              gofumpt.enable = true;
               rustfmt = {
                 enable = true;
                 package = rustToolchain pkgs;
@@ -127,11 +130,17 @@
               );
             oci = pkgs.dockerTools.buildImage {
               name = pname;
-              tag = "latest";
+              tag = version;
               copyToRoot = [ self'.packages.default ];
               config = {
                 Cmd = [ "/bin/${pname}" ];
               };
+            };
+            client-go = pkgs.buildGoModule {
+              pname = "avf-client-go";
+              inherit version;
+              src = pkgs.lib.cleanSource ./sdk/go;
+              vendorHash = "sha256-SbY5sYcxcTP+nlsWVV6wtzmJIeDRjZ8noZFPW0kw/jc=";
             };
           };
           checks = {

@@ -1,0 +1,15 @@
+version: v2
+managed:
+  enabled: true
+  override:
+    - file_option: go_package_prefix
+      value: github.com/brian14708/gst-server/sdk/go
+plugins:
+  - local: ["go", "tool", "google.golang.org/protobuf/cmd/protoc-gen-go"]
+    out: .
+    opt: paths=source_relative
+  - local: ["go", "tool", "google.golang.org/grpc/cmd/protoc-gen-go-grpc"]
+    out: .
+    opt: paths=source_relative
+inputs:
+  - directory: ../../proto

@@ -21,4 +21,4 @@ jobs:
         with:
           name: brian14708
           authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
-      - run: nix flake check
+      - run: nix flake check --all-systems

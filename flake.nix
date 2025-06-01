@@ -133,7 +133,7 @@
               pname = "avf-client-go";
               version = server.version;
               src = pkgs.lib.cleanSource ./sdk/go;
-              vendorHash = "sha256-SbY5sYcxcTP+nlsWVV6wtzmJIeDRjZ8noZFPW0kw/jc=";
+              vendorHash = "sha256-MrXWIksayRsSzkIJV0S9WHkwMUWx8GYobJRuYAWfbc8=";
             };
           };
           checks = {

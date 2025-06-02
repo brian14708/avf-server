@@ -35,21 +35,14 @@
       perSystem =
         {
           self',
-          inputs',
           pkgs,
+          lib,
           system,
           ...
         }:
         let
-          rustToolchain = (
-            p:
-            p.rust-bin.stable.latest.default.override {
-              extensions = [ "rust-src" ];
-            }
-          );
+          rustToolchain = (p: p.rust-bin.stable.latest.default);
           craneLib = (crane.mkLib pkgs).overrideToolchain rustToolchain;
-          pname = "avf-server";
-          version = self'.packages.default.version;
         in
         {
           _module.args.pkgs = import inputs.nixpkgs {
@@ -93,25 +86,25 @@
           apps = {
             default = {
               type = "app";
-              program = "${self'.packages.default}/bin/${pname}";
+              program = "${self'.packages.server}/bin/avf-server";
               meta.description = "avf-server";
             };
           };
 
-          packages = {
-            default =
+          packages = rec {
+            server =
               let
-                src =
-                  with pkgs.lib.fileset;
-                  toSource {
-                    root = ./.;
-                    fileset = unions [
-                      (craneLib.fileset.commonCargoSources ./.)
-                      ./proto
-                    ];
-                  };
                 commonArgs = {
-                  inherit pname src;
+                  pname = "avf-server";
+                  src =
+                    with lib.fileset;
+                    toSource {
+                      root = ./.;
+                      fileset = unions [
+                        (craneLib.fileset.commonCargoSources ./.)
+                        ./proto
+                      ];
+                    };
                   strictDeps = true;
                   nativeBuildInputs = with pkgs; [
                     protobuf
@@ -129,22 +122,22 @@
                 }
               );
             oci = pkgs.dockerTools.buildImage {
-              name = pname;
-              tag = version;
-              copyToRoot = [ self'.packages.default ];
+              name = "avf-server";
+              tag = server.version;
+              copyToRoot = [ server ];
               config = {
-                Cmd = [ "/bin/${pname}" ];
+                Cmd = [ "/bin/avf-server" ];
               };
             };
             client-go = pkgs.buildGoModule {
               pname = "avf-client-go";
-              inherit version;
+              version = server.version;
               src = pkgs.lib.cleanSource ./sdk/go;
               vendorHash = "sha256-SbY5sYcxcTP+nlsWVV6wtzmJIeDRjZ8noZFPW0kw/jc=";
             };
           };
           checks = {
-          } // (pkgs.lib.mapAttrs' (n: pkgs.lib.nameValuePair "package-${n}") self'.packages);
+          } // (lib.mapAttrs' (n: lib.nameValuePair "package-${n}") self'.packages);
         };
     };
 }
